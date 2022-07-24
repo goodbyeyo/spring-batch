@@ -12,45 +12,47 @@ import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-@RequiredArgsConstructor
 @Configuration
-public class StudyJobConfiguration {
+@RequiredArgsConstructor
+public class DBJobConfiguration {
 
     private final JobBuilderFactory jobBuilderFactory;
+
     private final StepBuilderFactory stepBuilderFactory;
 
     @Bean
-    public Job studyJob(){
-        return jobBuilderFactory.get("studyJob")
-                .start(studyStep1())
-                .next(studyStep2())
-                .build();   //Job 인터페이스의 구현체르 생성
-    }
-
-
-    @Bean
-    public Step studyStep1() {
-        return stepBuilderFactory.get("studyStep1")
-                .tasklet(new Tasklet() {    // defalut : 무한반복
-                    @Override
-                    public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
-                        System.out.println(" Study Spring Batch Setp1 ");
-                        return RepeatStatus.FINISHED;
-                    }
-                })
+    public Job job() {
+        return jobBuilderFactory.get("job")
+                .start(step1())
+                .next(step2())
                 .build();
     }
 
-    @Bean
-    public Step studyStep2() {
-        return stepBuilderFactory.get("studyStep2")
-                .tasklet(new Tasklet() {    // defalut : 무한반복
+    private Step step1() {
+        return stepBuilderFactory.get("step1")
+                .tasklet(new Tasklet() {
+
                     @Override
                     public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
-                        System.out.println(" Study Spring Batch Setp2 ");
-                        return RepeatStatus.FINISHED;
+                        System.out.println("===== Step1 was executed =====");
+                        return RepeatStatus.FINISHED;   // 1번 실행후 종료, default : 반본 실행
                     }
-                })
-                .build();
+                }).build();
     }
+
+    private Step step2() {
+        return stepBuilderFactory.get("step2")
+                .tasklet(new Tasklet() {
+
+                    @Override
+                    public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
+                        System.out.println("===== Step2 was executed =====");
+                        return RepeatStatus.FINISHED;   // 1번 실행후 종료, default : 반본 실행
+                    }
+                }).build();
+    }
+
+
+
+
 }
