@@ -29,6 +29,8 @@ spring:
       password: new1234!
       driver-class-name: org.postgresql.Driver
   batch:
+    job:
+      enabled: false  # default : true -> Job 자동실행 되지 않도록 설정
     jdbc:
       initialize-schema: always
 
