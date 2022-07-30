@@ -1,13 +1,13 @@
-package study.springbatch.repository;
-
-import lombok.RequiredArgsConstructor;
-
-import javax.sql.DataSource;
-
-@RequiredArgsConstructor
-public class JobCustomRepository {
-
-    private final DataSource dataSource;
+//package study.springbatch.repository;
+//
+//import lombok.RequiredArgsConstructor;
+//
+//import javax.sql.DataSource;
+//
+//@RequiredArgsConstructor
+//public class JobCustomRepository {
+//
+//    private final DataSource dataSource;
 
     // JDBC
 //    protected JobRepository createJobRepository() throws Exception {
@@ -28,4 +28,4 @@ public class JobCustomRepository {
 //    }
 
 
-}
+//}
