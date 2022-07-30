@@ -36,20 +36,30 @@ import java.util.Map;
 @Configuration
 @RequiredArgsConstructor
 public class ApiStepConfiguration {
-
     private final StepBuilderFactory stepBuilderFactory;
+
     private final DataSource dataSource;
 
     private int chunkSize = 10;
 
     @Bean
     public Step apiMasterStep() throws Exception {
+        ProductVO[] productList = QueryGenerator.getProductList(dataSource);
         return stepBuilderFactory.get("apiMasterStep")
                 .partitioner(apiSlaveStep().getName(), partitioner())
                 .step(apiSlaveStep())
-                .gridSize(3)
+                .gridSize(productList.length)
                 .taskExecutor(taskExecutor())
                 .build();
+    }
+
+    @Bean
+    public TaskExecutor taskExecutor() {
+        ThreadPoolTaskExecutor taskExecutor = new ThreadPoolTaskExecutor();
+        taskExecutor.setCorePoolSize(3);
+        taskExecutor.setMaxPoolSize(6);
+        taskExecutor.setThreadNamePrefix("api-thread-");
+        return taskExecutor;
     }
 
     @Bean
@@ -60,6 +70,13 @@ public class ApiStepConfiguration {
                 .processor(itemProcessor())
                 .writer(itemWriter())
                 .build();
+    }
+
+    @Bean
+    public ProductPartitioner partitioner() {
+        ProductPartitioner productPartitioner = new ProductPartitioner();
+        productPartitioner.setDataSource(dataSource);
+        return productPartitioner;
     }
 
     private ItemReader<ProductVO> itemReader(@Value("#{stepExecutionContext['product']}")
@@ -84,13 +101,6 @@ public class ApiStepConfiguration {
         reader.afterPropertiesSet();
 
         return reader;
-    }
-
-    @Bean
-    public ProductPartitioner partitioner() {
-        ProductPartitioner productPartitioner = new ProductPartitioner();
-        productPartitioner.setDataSource(dataSource);
-        return productPartitioner;
     }
 
     @Bean
@@ -122,13 +132,4 @@ public class ApiStepConfiguration {
         return writer;
     }
 
-
-    @Bean
-    public TaskExecutor taskExecutor() {
-        ThreadPoolTaskExecutor taskExecutor = new ThreadPoolTaskExecutor();
-        taskExecutor.setCorePoolSize(3);
-        taskExecutor.setMaxPoolSize(6);
-        taskExecutor.setThreadNamePrefix("api-thread-");
-        return taskExecutor;
-    }
 }
