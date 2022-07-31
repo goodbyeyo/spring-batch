@@ -3,6 +3,7 @@ package study.batch.batchService.job.api;
 import lombok.RequiredArgsConstructor;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
+import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
@@ -28,6 +29,9 @@ import study.batch.batchService.classifier.WriterClassifier;
 import study.batch.batchService.domain.ApiRequestVO;
 import study.batch.batchService.domain.ProductVO;
 import study.batch.batchService.partition.ProductPartitioner;
+import study.batch.service.ApiService1;
+import study.batch.service.ApiService2;
+import study.batch.service.ApiService3;
 
 import javax.sql.DataSource;
 import java.util.HashMap;
@@ -79,7 +83,9 @@ public class ApiStepConfiguration {
         return productPartitioner;
     }
 
-    private ItemReader<ProductVO> itemReader(@Value("#{stepExecutionContext['product']}")
+    @Bean
+    @StepScope
+    public ItemReader<ProductVO> itemReader(@Value("#{stepExecutionContext['product']}")
                                              ProductVO productVO) throws Exception {
 
         JdbcPagingItemReader<ProductVO> reader = new JdbcPagingItemReader<>();
@@ -118,14 +124,15 @@ public class ApiStepConfiguration {
         return processor;
     }
 
-    private ItemWriter itemWriter() {
+    @Bean
+    public ItemWriter itemWriter() {
         ClassifierCompositeItemWriter<ApiRequestVO> writer =
                 new ClassifierCompositeItemWriter<>();
         WriterClassifier<ApiRequestVO, ItemWriter<? super ApiRequestVO>> classifier = new WriterClassifier();
         Map<String, ItemWriter<ApiRequestVO>> writerMap = new HashMap<>();
-        writerMap.put("1", new ApiItemWriter1());
-        writerMap.put("2", new ApiItemWriter2());
-        writerMap.put("3", new ApiItemWriter3());
+        writerMap.put("1", new ApiItemWriter1(new ApiService1()));
+        writerMap.put("2", new ApiItemWriter2(new ApiService2()));
+        writerMap.put("3", new ApiItemWriter3(new ApiService3()));
 
         classifier.setWriterMap(writerMap);
         writer.setClassifier(classifier);

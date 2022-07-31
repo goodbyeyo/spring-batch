@@ -17,7 +17,7 @@ public class QueryGenerator {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
         List<ProductVO> productList = jdbcTemplate.query("select type as type from product group by type", new ProductRowMapper() {
             @Override
-            public ProductVO mapRow(ResultSet rs, int rowNum) throws SQLException {
+            public ProductVO mapRow(ResultSet rs, int i) throws SQLException {
                 return ProductVO.builder().type(rs.getString("type")).build();
             }
         });
