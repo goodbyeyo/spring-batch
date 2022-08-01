@@ -1,6 +1,7 @@
 package study.batch.service;
 
 import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.ClientHttpResponse;
@@ -32,10 +33,11 @@ public abstract class AbstractApiService {
         }).build();
 
         restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory());
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
 
         ApiInfo apiInfo = ApiInfo.builder().apiRequestList(apiRequest).build();
+        HttpEntity<ApiInfo> reqEntity = new HttpEntity<>(apiInfo, headers);
 
         return doApiService(restTemplate, apiInfo);
     }

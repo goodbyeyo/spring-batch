@@ -12,11 +12,11 @@ public class FileItemProcessor implements ItemProcessor<ProductVO, Product> {
 
     @Override
     public Product process(ProductVO item) throws Exception {
-//        ModelMapper modelMapper = new ModelMapper();
-//        Product product = modelMapper.map(item, Product.class);
+        ModelMapper modelMapper = new ModelMapper();
+        Product product = modelMapper.map(item, Product.class);
 
-        ObjectMapper mapper = new ObjectMapper();
-        Product product = mapper.readValue((DataInput) item, Product.class);
+//        ObjectMapper mapper = new ObjectMapper();
+//        Product product = mapper.readValue((DataInput) item, Product.class);
         return product;
     }
 }

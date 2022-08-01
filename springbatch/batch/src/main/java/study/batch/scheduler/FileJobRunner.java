@@ -20,7 +20,7 @@ public class FileJobRunner extends JobRunner {
     protected void dorRun(ApplicationArguments args) {
         String[] sourceArgs = args.getSourceArgs(); // 어플리케이션 program argument 로 넘긴 파라미터 값
         JobDetail jobDetail = buildJobDetail(FileSchJob.class, "fileJob", "batch", new HashMap());
-        Trigger trigger = buildJobTrigger("0/50 * * * * ?");
+        Trigger trigger = buildJobTrigger("0/40 * * * * ?");
         jobDetail.getJobDataMap().put("requestDate", sourceArgs[0]);    // 스프링 배치로 전달
 
         try {

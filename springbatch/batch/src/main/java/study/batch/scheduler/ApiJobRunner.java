@@ -19,7 +19,7 @@ public class ApiJobRunner extends JobRunner {
     @Override
     protected void dorRun(ApplicationArguments args) {
         JobDetail jobDetail = buildJobDetail(ApiSchJob.class, "apiJob", "batch", new HashMap());
-        Trigger trigger = buildJobTrigger("0/30 * * * * ?");
+        Trigger trigger = buildJobTrigger("0/20 * * * * ?");
 
         try {
             scheduler.scheduleJob(jobDetail, trigger);

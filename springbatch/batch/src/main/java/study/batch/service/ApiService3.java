@@ -11,7 +11,7 @@ public class ApiService3 extends AbstractApiService{
     @Override
     protected ApiResponseVO doApiService(RestTemplate restTemplate, ApiInfo apiInfo) {
 
-        ResponseEntity<String> responseEntity = restTemplate.postForEntity("http://localhost:8083", apiInfo, String.class);
+        ResponseEntity<String> responseEntity = restTemplate.postForEntity("http://localhost:8083/api/product/1", apiInfo, String.class);
         int statusCode = responseEntity.getStatusCodeValue();
         return ApiResponseVO.builder()
                 .status(statusCode)
